@@ -10,6 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <assertj.version>3.4.1</assertj.version>
         <coveralls.version>4.2.0</coveralls.version>
         <findbugs.version>3.0.1</findbugs.version>
@@ -84,6 +85,9 @@
                     <name>env.COVERALLS</name>
                 </property>
             </activation>
+            <properties>
+                <coveralls.api>${env.COVERALLS}</coveralls.api>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -91,7 +95,7 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>${coveralls.version}</version>
                         <configuration>
-                            <repoToken>env.COVERALLS</repoToken>
+                            <repoToken>${coveralls.api}</repoToken>
                         </configuration>
                         <executions>
                             <execution>
