@@ -29,6 +29,15 @@ public class ParsersTest {
     }
 
     @Test
+    public void testOtherSeq() throws ParsingException {
+        final Context ctx = new SimpleContext("abcdefg");
+        final String sequence = "cbda";
+        final Parser<CharSequence> parser = seq(any(sequence));
+        assertThat(parser.parse(ctx)).isEqualTo("a");
+        assertThat(ctx.pos()).isEqualTo(1);
+    }
+
+    @Test
     public void testSeqToLong() {
         final Context ctx = new SimpleContext("abc");
         final String sequence = "abcd";
