@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
  * @author Jeff Hutchins
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ParserUtils {
+public class Parsers {
 
     public static final Parser<Character> WHITE_SPACE = any(" \t\n\r");
     public static final Parser<Character> DIGIT = range('0', '9');

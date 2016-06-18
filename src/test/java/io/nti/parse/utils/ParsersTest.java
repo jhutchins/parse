@@ -11,12 +11,13 @@ import io.nti.parse.Context;
 import io.nti.parse.Parser;
 import io.nti.parse.ParsingException;
 
+import static io.nti.parse.utils.Parsers.*;
 import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Jeff Hutchins
  */
-public class ParserUtilsTest {
+public class ParsersTest {
 
     @Test
     public void testSeq() throws ParsingException {
@@ -44,7 +45,7 @@ public class ParserUtilsTest {
     @Test
     public void testOr() throws ParsingException {
         final Context ctx = new SimpleContext("abcdefg");
-        final Parser<CharSequence> parser = ParserUtils.or(seq("cd"), seq("ab"));
+        final Parser<CharSequence> parser = Parsers.or(seq("cd"), seq("ab"));
 
         assertThat(parser.parse(ctx)).isEqualTo("ab");
         assertThat(ctx.pos()).isEqualTo(2);
@@ -158,7 +159,7 @@ public class ParserUtilsTest {
     public void moreTests() throws ParsingException {
         final Context ctx = new SimpleContext("<%----%><%--\nTest\n--%>");
         final Parser<CharSequence> start = seq("<%--");
-        final Parser<Character> Char = ParserUtils.or(any("\t\n\r"), range((char) 0x20, (char) 0xD7FF), range((char) 0xE000, (char) 0xFFFD));
+        final Parser<Character> Char = Parsers.or(any("\t\n\r"), range((char) 0x20, (char) 0xD7FF), range((char) 0xE000, (char) 0xFFFD));
         final Parser<CharSequence> end = seq("--%>");
         final Parser<CharSequence> middle = join(unwrap(optional(repeat(constrain(Char, not(end)))), Collections.emptyList()), list -> {
             final StringBuilder builder = new StringBuilder();
