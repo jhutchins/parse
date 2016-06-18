@@ -57,4 +57,14 @@ public abstract class ContextTest {
         assertThat(ctx.advance(2)).isEqualTo("");
         assertThat(ctx.advance(2)).isEqualTo("");
     }
+
+    @Test
+    public void testToString() {
+        final Context ctx = getContext("abc");
+        assertThat(ctx.toString()).isEqualTo("abc");
+        ctx.advance();
+        assertThat(ctx.toString()).isEqualTo("bc");
+        ctx.advance();
+        assertThat(ctx.toString()).isEqualTo("c");
+    }
 }
