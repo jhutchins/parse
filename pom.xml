@@ -9,11 +9,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <assertj.version>3.4.1</assertj.version>
-        <coveralls-maven-plugin.version>4.2.0</coveralls-maven-plugin.version>
+        <coveralls.version>4.2.0</coveralls.version>
         <findbugs.version>3.0.1</findbugs.version>
         <junit.version>4.12</junit.version>
         <lombok.version>1.16.8</lombok.version>
+        <jacoco.version>0.7.6.201602180812</jacoco.version>
     </properties>
 
     <dependencies>
@@ -53,12 +55,40 @@
             </plugin>
 
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
+                <version>${coveralls.version}</version>
                 <configuration>
                     <repoToken>${env.COVERALLS}</repoToken>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
