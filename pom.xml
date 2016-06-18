@@ -81,8 +81,7 @@
             <id>ci</id>
             <activation>
                 <property>
-                    <name>env.CI</name>
-                    <value>true</value>
+                    <name>env.COVERALLS</name>
                 </property>
             </activation>
             <build>
