@@ -3,15 +3,17 @@ package io.nti.parse.utils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
-import io.nti.parse.SimpleContext;
 import io.nti.parse.Context;
 import io.nti.parse.Parser;
 import io.nti.parse.ParsingException;
+import io.nti.parse.SimpleContext;
 
 import static io.nti.parse.utils.Parsers.*;
+import static io.nti.parse.utils.Parsers.not;
 import static org.assertj.core.api.Assertions.*;
 
 /**
@@ -131,9 +133,33 @@ public class ParsersTest {
     }
 
     @Test
+    public void testRepeatMinMet() throws ParsingException {
+        final Context ctx = new SimpleContext("abababac");
+        final Parser<List<CharSequence>> parser = repeat(seq("ab"), 2);
+
+        assertThat(parser.parse(ctx)).hasSize(3).contains("ab", "ab", "ab");
+        assertThat(ctx.pos()).isEqualTo(6);
+    }
+
+    @Test(expected = ParsingException.class)
+    public void testRepeatMinNotMet() throws ParsingException {
+        final Context ctx = new SimpleContext("abababacdef");
+        final Parser<List<CharSequence>> parser = repeat(seq("ab"), 4);
+        parser.parse(ctx);
+    }
+
+    @Test
     public void testRange() throws ParsingException {
         final Context ctx = new SimpleContext("abcdefg");
-        final Parser<Character> parser = range((char)0x61, (char)0x64);
+        final Parser<Character> parser = range('a', 'd');
+        assertThat(parser.parse(ctx)).isEqualTo('a');
+        assertThat(ctx.pos()).isEqualTo(1);
+    }
+
+    @Test
+    public void testRangeInt() throws ParsingException {
+        final Context ctx = new SimpleContext("abcdefg");
+        final Parser<Character> parser = range(0x61, 0x64);
         assertThat(parser.parse(ctx)).isEqualTo('a');
         assertThat(ctx.pos()).isEqualTo(1);
     }
@@ -144,6 +170,13 @@ public class ParsersTest {
         final Parser<Character> parser = any("%$#aTG");
         assertThat(parser.parse(ctx)).isEqualTo('a');
         assertThat(ctx.pos()).isEqualTo(1);
+    }
+
+    @Test(expected = ParsingException.class)
+    public void testAnyNoMore() throws ParsingException {
+        final Context ctx = new SimpleContext("");
+        final Parser<Character> parser = any("%$#aTG");
+        parser.parse(ctx);
     }
 
     @Test
@@ -162,6 +195,21 @@ public class ParsersTest {
             // No-Op
         }
         assertThat(ctx.pos()).isEqualTo(5);
+    }
+
+    @Test
+    public void testPredicateConstraintPass() throws ParsingException {
+        final Context ctx = new SimpleContext("abcdefg");
+        final Parser<Character> parser = constrain(any("abcd"), (Predicate<Character>)(c) -> true);
+        assertThat(parser.parse(ctx)).isEqualTo('a');
+        assertThat(ctx.pos()).isEqualTo(1);
+    }
+
+    @Test(expected = ParsingException.class)
+    public void testPredicateConstraintFail() throws ParsingException {
+        final Context ctx = new SimpleContext("abcdefg");
+        final Parser<Character> parser = constrain(any("abcd"), (Predicate<Character>)(c) -> false);
+       parser.parse(ctx);
     }
 
     @Test

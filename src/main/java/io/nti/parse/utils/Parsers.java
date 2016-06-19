@@ -185,7 +185,7 @@ public class Parsers {
         }, parser.toString());
     }
 
-    public static <T> Parser constrain(Parser<T> parser, Predicate<T> contraint) {
+    public static <T> Parser<T> constrain(Parser<T> parser, Predicate<T> contraint) {
         return named((ctx) -> {
             final T result = parser.parse(ctx);
             if (!contraint.test(result)) {
